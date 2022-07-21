@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-10.15 # Using macOS as https://github.com/actions/virtual-environments/issues/183
+    runs-on: macos-12 # Using macOS as https://github.com/actions/virtual-environments/issues/183
     steps:
       - uses: actions/checkout@v2
       - name: Download base image
@@ -26,3 +26,7 @@ jobs:
           AWS_ACCESS_KEY_ID=${{secrets.S3_KEY}} AWS_SECRET_ACCESS_KEY=${{secrets.S3_SECRET_KEY}} aws s3 sync . s3://clovervm/ --acl public-read --endpoint-url https://ams3.digitaloceanspaces.com --no-progress
           echo Uploaded https://clovervm.ams3.digitaloceanspaces.com/$(ls)
         working-directory: output-virtualbox-ovf
+        uses: actions/upload-artifact@v3
+        with:
+          name: file
+          path: ./output-virtualbox-ovf/clover-devel_*.ova
