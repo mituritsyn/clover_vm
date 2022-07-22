@@ -16,7 +16,7 @@ jobs:
       - name: Download base image
         run: |
           mkdir output-virtualbox-iso
-          wget --progress=dot:giga https://clovervm.ams3.digitaloceanspaces.com/base-focal.ova -O output-virtualbox-iso/clover-devel.ova
+      #     wget --progress=dot:giga https://clovervm.ams3.digitaloceanspaces.com/base-focal.ova -O output-virtualbox-iso/clover-devel.ova
       - name: Build
         run: ./build.sh
       - name: Upload
