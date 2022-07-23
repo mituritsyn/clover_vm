@@ -13,22 +13,22 @@ sudo -E sh -c 'echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retr
 cat /etc/apt/apt.conf.d/80-retries
 
 echo "--- Updating apt"
-sudo -E sh -c 'apt update'
+sudo -E sh -c 'apt-get update'
 
 echo "--- Allowing apt to perform its updates"
 sudo -E sh -c 'while fuser /var/lib/dpkg/lock ; do sleep 0.5 ; done'
 
 echo "--- Installing gnupg2"
-sudo -E sh -c 'apt install -y gnupg2'
+sudo -E sh -c 'apt-get install -y gnupg2'
 
 echo "--- Installing open-vm-tools"
-sudo -E sh -c 'apt install -y open-vm-tools open-vm-tools-desktop'
+sudo -E sh -c 'apt-get install -y open-vm-tools open-vm-tools-desktop'
 
 echo "--- Installing ROS desktop"
-sudo -E sh -c 'apt install -y curl'
+sudo -E sh -c 'apt-get install -y curl'
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-sudo -E sh -c 'apt install -y python3-pip python3-rosdep python3-rosinstall-generator python3-wstool build-essential ros-noetic-desktop'
+sudo -E sh -c 'apt-get update; apt-get install -y python3-pip python3-rosdep python3-rosinstall-generator python3-wstool build-essential ros-noetic-desktop'
 
 echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 source /opt/ros/noetic/setup.bash
@@ -66,7 +66,7 @@ ln -s ~/PX4-Autopilot/mavlink ~/catkin_ws/src/
 echo "--- Installing PX4 dependencies"
 ~/PX4-Autopilot/Tools/setup/ubuntu.sh
 pip3 install --user toml
-sudo -E sh -c 'apt install -y ant openjdk-11-jdk' # Additional packages for jMAVSim
+sudo -E sh -c 'apt-get install -y ant openjdk-11-jdk' # Additional packages for jMAVSim
 
 echo "--- Patching mavlink_sitl_gazebo"
 # See https://github.com/PX4/PX4-SITL_gazebo/pull/872
@@ -88,12 +88,11 @@ cd ~/catkin_ws
 catkin_make
 
 echo "--- Installing Visual Studio Code"
-sudo -E sh -c 'apt install -y curl'
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > ${HOME}/packages.microsoft.gpg
 sudo -E sh -c 'install -o root -g root -m 644 ${HOME}/packages.microsoft.gpg /usr/share/keyrings'
 rm ${HOME}/packages.microsoft.gpg
 sudo -E sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-sudo -E sh -c 'apt install -y apt-transport-https; apt update; apt install -y code'
+sudo -E sh -c 'apt-get install -y apt-transport-https; apt-get update; apt-get install -y code'
 code --install-extension ms-python.python
 code --install-extension DavidAnson.vscode-markdownlint
 code --install-extension ms-vscode.cmake-tools
@@ -134,22 +133,22 @@ sudo systemctl enable roscore.service
 
 echo "--- Installing QGroundControl"
 sudo -E sh -c "usermod -a -G dialout $USER"
-sudo -E sh -c 'apt remove -y modemmanager; apt install -y gstreamer1.0-plugins-bad gstreamer1.0-libav'
+sudo -E sh -c 'apt-get remove -y modemmanager; apt-get install -y gstreamer1.0-plugins-bad gstreamer1.0-libav'
 curl https://s3-us-west-2.amazonaws.com/qgroundcontrol/latest/QGroundControl.AppImage -o ${HOME}/QGroundControl.AppImage
 chmod a+x ${HOME}/QGroundControl.AppImage
 
 echo "--- Installing Firefox web browser"
-sudo -E sh -c 'apt install -y firefox'
+sudo -E sh -c 'apt-get update; apt-get install -y firefox'
 
 echo "--- Installing Monkey web server"
-sudo apt install -y /tmp/packages/monkey_1.6.9-1_amd64.deb
+sudo apt-get install -y /tmp/packages/monkey_1.6.9-1_amd64.deb
 sed "s/pi/${USER}/g" ${HOME}/catkin_ws/src/clover/builder/assets/monkey | sudo tee /etc/monkey/sites/default
 sudo -E sh -c "sed -i 's/SymLink Off/SymLink On/' /etc/monkey/monkey.conf"
 sudo cp ${HOME}/catkin_ws/src/clover/builder/assets/monkey.service /etc/systemd/system/monkey.service
 sudo systemctl enable monkey
 
 echo "--- Installing additional packages"
-sudo -E sh -c 'apt install -y sshfs gvfs-fuse gvfs-backends python3-opencv byobu ipython3 byobu nmap lsof tmux vim ros-noetic-rqt-multiplot'
+sudo -E sh -c 'apt-get update; apt-get install -y sshfs gvfs-fuse gvfs-backends python3-opencv byobu ipython3 byobu nmap lsof tmux vim ros-noetic-rqt-multiplot'
 
 echo "--- Personalizing VM"
 # sudo -E sh -c 'cp /usr/share/xfce4/backdrops/xubuntu-wallpaper.png /usr/share/xfce4/backdrops/xubuntu-wallpaper-old.png; cp ${HOME}/Pictures/Logo_COEX_2019_white_on_black.png /usr/share/xfce4/backdrops/xubuntu-wallpaper.png'
@@ -162,7 +161,7 @@ sudo -E sh -c 'mv /tmp/clover_vm_version /etc/clover_vm_version'
 cat /etc/clover_vm_version
 
 echo "--- Cleaning up"
-sudo -E sh -c 'apt -y autoremove; apt -y autoclean; apt -y clean; fstrim -v /'
+sudo -E sh -c 'apt-get -y autoremove; apt-get -y autoclean; apt-get -y clean; fstrim -v /'
 
 echo "--- Validating"
 # python --version # python-is-python3
